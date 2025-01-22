@@ -1,4 +1,4 @@
-name: C/C++ CI - Pre-commit checks
+name: Pre-commit checks
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
    codespell:
-    name: Check for spelling errors
+    name: "Check for spelling errors"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,5 +19,18 @@ jobs:
           check_filenames: true
           skip: "./include, ./configs"
           ignore_words_file: ./support/.codespellignore
-          # When using this Action in other repos, the --skip option below can be removed
-          
+   format:
+    name: "Clang format"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 2
+
+      - uses: jayllyz/clang-format-action@v1
+        with:
+          check: true
+          style: file
+          extensions: h,c
+          clang-version: latest
